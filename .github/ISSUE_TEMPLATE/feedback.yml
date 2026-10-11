@@ -1,0 +1,51 @@
+name: Feedback or bug report
+description: Tell us what you searched for, what worked, and what didn't.
+title: "[feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Gruffet! This is an early release, so "it did not work for my search" reports are very welcome.
+        Business names and places are fine to share. Please do not paste real people's personal data.
+  - type: input
+    id: command
+    attributes:
+      label: The command you ran
+      placeholder: gruffet run "dentist" --near "Leeds, United Kingdom" --limit 40
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and what happened?
+      description: How many leads came back, how many were "perfect", and anything that looked wrong or missing.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Terminal output (include the output of `gruffet doctor`)
+      render: text
+  - type: input
+    id: env
+    attributes:
+      label: Your OS and Python version
+      placeholder: Windows 11, Python 3.12
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Which coding agent did you use, if any?
+      options:
+        - Claude Code
+        - Codex
+        - Cursor
+        - Antigravity
+        - Other
+        - None (I ran the CLI myself)
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed any personal data from what I pasted.
+          required: true
