@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+gruffet-out/
+*.xlsx
+.env
+
+# promo-video workspace: large media, third-party music, a local TTS venv
+brag-output/
+*.mp4
+*.wav
+.claude/
+.vscode/
+.idea/
+.DS_Store
