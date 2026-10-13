@@ -1,182 +1,160 @@
-# Gruffet
+<div align="center">
 
-Free, keyless, **cross-checked** lead generation and market research for coding agents.
-It runs inside Claude Code, Codex, Cursor or Antigravity. There are no API keys: the agent you
-already use is the LLM, and the scraping itself is deterministic, so it costs almost no tokens.
+<img src="assets/gruffet-mark.svg" alt="Gruffet, the open-source lead intelligence explorer" width="178">
 
+# Gruffet 🦦
+
+### Find businesses. Verify contacts. Research competitors. Keep the evidence.
+
+**Free, open-source local business discovery and competitor intelligence for AI coding agents.**
+
+[![MIT License](https://img.shields.io/badge/license-MIT-236b62?style=flat-square)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-377D73?style=flat-square)](pyproject.toml)
+[![Early release](https://img.shields.io/badge/release-v0.1%20early-F5B544?style=flat-square)](#-status-and-limitations)
+[![GitHub Issues](https://img.shields.io/github/issues/t4j44/Gruffet?style=flat-square)](https://github.com/t4j44/Gruffet/issues)
+
+**[⚡ Get started](#-quick-start) · [🔍 How it works](#-the-investigation-pipeline) · [📈 Competitor research](#-competitor-research) · [🤝 Contribute](#-contributing)**
+
+</div>
+
+---
+
+## 🧭 Beyond a list of scraped names
+
+**Gruffet** discovers local businesses, investigates public websites, checks contact claims against available sources, and exports a research workbook with supporting evidence. It also examines competitor sites for publicly visible market signals.
+
+```text
+YOUR REQUEST                GRUFFET RESEARCH PIPELINE                  RESULT
+Dentists in Leeds    →  Discover → Enrich → Verify → Review    →  Sourced XLSX
+Compare rivals       →  Fetch → Extract → Analyse → Report     →  Research workbook
 ```
-leads:        discover → enrich → verify → (agent reviews borderline leads) → images ─┐
-competitors:  add sites → analyse (pricing, tech, content, weak spots) → agent writes analysis ─┴→ one .xlsx
-```
 
-> **Status: v0.1, early.** The lead pipeline and a first competitor-analysis module work end to end and are tested (see
-> [What works today](#what-works-today) and [Not built yet](#not-built-yet)). Please read the
-> [limits](#honest-limits) before relying on the output.
+> [!IMPORTANT]
+> **v0.1 is an early release.** Its `perfect` tier means the current verification rules passed—not that the business is open today, a contact is correct, or the branch address matches. Independently verify records before outreach.
 
-## Why it is different
+## ✨ Features
 
-Most scrapers return whatever they found. Gruffet treats every fact as a **claim** with a source and
-a label (`EXTRACTED` / `INFERRED` / `AMBIGUOUS`, the same audit-trail idea as graphify), then only
-calls a lead **perfect** when independent sources agree:
+| | Capability | What it does |
+|:--:|---|---|
+| 🔎 | **Local business discovery** | Search business categories near a location, using OpenStreetMap. |
+| 🌐 | **Website enrichment** | Extract published contact information, links, and site signals. |
+| 🛡️ | **Evidence-backed verification** | Check site availability, identity matches, closure signals, and corroboration. |
+| 🧠 | **Coding-agent review** | Small evidence cards let an agent assess ambiguous records. |
+| 📈 | **Competitor intelligence** | Review site positioning, visible pricing, technologies, and content clues. |
+| 📊 | **Structured Excel export** | Separate lead tiers, gate results, sources, and competitor findings. |
+| 🔑 | **Keyless default pipeline** | No separate paid scraping or LLM API key; use your existing coding agent. |
 
-| Gate | Passes when |
-|---|---|
-| `website_alive` | the listed website answers, and is not a parked / for-sale page |
-| `identity_match` | the site is really this business (name match, or the OSM phone is also on the site) |
-| `not_closed` | no "permanently closed" signal anywhere |
-| `contact_corroborated` | a phone is confirmed by 2+ independent sources (OSM, the business's own site, or an external page the agent cites), **or** an email has working mail servers and ties to the site |
+## ⚡ Quick start
 
-Anything that is not clearly good or bad goes to a small queue of **review cards** (~100 tokens each)
-that your agent judges. Everything else is decided by code. Tiers:
-
-`perfect` · `agent-approved` · `review` · `incomplete` (no contact data yet; missing data, *not* a bad lead) · `reject`
-
-A hard-failed lead (dead site, wrong business, closed) can never be "accepted" by the agent.
-
-## Install
-
-Needs Python 3.10+. Quickest (installs the `gruffet` command):
+**Requires Python 3.10+.** Install using [uv](https://docs.astral.sh/uv/) or pip.
 
 ```bash
-uv tool install git+https://github.com/t4j44/Gruffet.git     # or: pip install git+https://github.com/t4j44/Gruffet.git
-gruffet doctor                                                # probes every backend for real
+uv tool install git+https://github.com/t4j44/Gruffet.git
+gruffet doctor
 gruffet run "dentist" --near "Leeds, United Kingdom" --limit 40
 ```
 
-Or from a clone (for development):
+Your output: **`gruffet-out/leads.xlsx`**, including research, evidence, and records needing review.
+
+<details>
+<summary><strong>Other installation methods</strong></summary>
 
 ```bash
-git clone https://github.com/t4j44/Gruffet.git && cd Gruffet
-uv venv && uv pip install -e ".[dev]"      # or: python -m venv .venv && pip install -e ".[dev]"
+pip install git+https://github.com/t4j44/Gruffet.git
+
+# Contributor setup
+git clone https://github.com/t4j44/Gruffet.git
+cd Gruffet
+uv venv
+uv pip install -e ".[dev]"
 pytest
 ```
 
-Optional, for JavaScript-only sites: `pip install -e ".[browser]" && crawl4ai-setup` (uses Crawl4AI's browser).
+Optional browser rendering for JavaScript-heavy sites: `pip install -e ".[browser]" && crawl4ai-setup` from a clone.
+</details>
 
-## Use
+## 🔍 The investigation pipeline
 
-One command:
-
-```bash
-gruffet run "dentist" --near "Leeds, United Kingdom" --radius 2500 --limit 40
+```mermaid
+flowchart LR
+    A[Discover businesses] --> B[Read public websites]
+    B --> C[Check claims]
+    C --> D{Verification gates}
+    D -->|Pass| E[Evidence-backed lead]
+    D -->|Uncertain| F[Agent reviews evidence]
+    D -->|Incomplete or reject| G[Separate queue]
+    E --> H[Excel workbook]
+    F --> H
+    G --> H
 ```
 
-Or step by step, which is how an agent should drive it:
+**Four current checks:** `website_alive`, `identity_match`, `not_closed`, and `contact_corroborated`.
+
+Run each stage yourself:
 
 ```bash
-gruffet discover "travel agency" --near "Dhaka, Bangladesh" --radius 4000   # OpenStreetMap, no key
-gruffet enrich                    # reads each lead's own website (robots.txt respected)
-gruffet verify                    # gates → score → tier
-gruffet missing                   # leads with no website → agent web-searches → `gruffet add`
-gruffet review --budget 1500      # compact cards for borderline leads
-gruffet resolve <id> accept --reason "…" [--rename "Current Name"]
-gruffet images                    # photos for the best leads (source URLs recorded)
-gruffet export                    # → gruffet-out/leads.xlsx
-```
-
-### Optional: Google Maps plugin (local only, against Google's terms)
-
-```bash
-pip install -e ".[browser]" && crawl4ai-setup          # one-time: the plugin drives a real browser
-gruffet discover dentist --near "Leeds, United Kingdom" --source gmaps --accept-google-tos-risk --limit 20
-gruffet discover dentist --near "Leeds, United Kingdom" --source both --accept-google-tos-risk   # OSM + Maps, merged
-```
-
-Read this before using it:
-
-- **Google's Terms of Service restrict scraping Maps and Google may block you.** You run it on your own machine and
-  accept that risk. It is refused unless you pass `--accept-google-tos-risk`.
-- **Never use it inside a hosted or paid product, and don't redistribute Google-derived data.** Keep it out of anything you sell.
-- It is deliberately gentle: one browser, one search, slow scrolling, a hard cap of 120 results, about one extra request
-  per place (to read the website and phone from the place page; `--gmaps-no-details` skips that).
-- **If Google shows a CAPTCHA or "unusual traffic" page it stops and says so. It will not try to get past it.**
-  Cookie banners get the privacy-preserving answer (reject non-essential).
-- It parses a live page, so it can break whenever Google changes its layout.
-
-Maps adds a second independent source, so more leads clear the cross-checks. In one live run (10 results, Leeds dentists)
-perfect leads rose from 2 to 10, each backed by a phone confirmed on both the Maps listing and the business's own site.
-
-Competitor analysis (any websites: SaaS rivals, local competitors, or your verified leads as a market):
-
-```bash
-gruffet compete add https://rival-one.com https://rival-two.com   # your agent finds these by web search
-gruffet compete from-leads        # or: use the verified leads' websites as the market
-gruffet compete run               # positioning, pricing, tech stack, sitemap activity, weak spots
-gruffet compete report            # compact fact cards (~250 tokens per competitor) for the agent
-gruffet note "Comparison" "@analysis.md"   # the agent's write-up, saved into the workbook
+gruffet discover "travel agency" --near "Dhaka, Bangladesh" --radius 4000
+gruffet enrich
+gruffet verify
+gruffet missing
+gruffet review --budget 1500
 gruffet export
 ```
 
-Every competitor fact keeps its source and an `EXTRACTED` / `INFERRED` label. Pricing and weak-spot signals are heuristics:
-check the source page before quoting a number. Sites that refuse automated access are marked *blocked* and left alone.
+**Verification is not sales qualification.** A contact may be corroborated but still be a poor prospect.
 
-The workbook has: **Perfect Leads** (with photo thumbnails), Review Queue, Needs Data, Rejected,
-**Gate Matrix** (every gate, colour-coded, with the reason in a cell comment), **Evidence** (every claim
-with its source and label), Images, **Competitors** + Competitor Evidence, **Analysis** (the agent's written
-conclusions), Market Snapshot, Run Log, About. Perfect Leads also shows each site's tech stack and weak spots
-(no HTTPS, no mobile viewport, no analytics, stale copyright), handy for web and marketing agencies.
+## 🤖 Built for coding agents
 
-## Using it from an agent
+- **Claude Code:** install the CLI and copy [`skills/gruffet`](skills/gruffet) into your project's `.claude/skills/gruffet/`.
+- **Codex / Cursor:** use the same CLI with [`AGENTS.md`](AGENTS.md). These integrations have not been fully field-tested.
+- **Other agents:** any agent that can run shell commands can potentially use the CLI; support is not guaranteed.
 
-- **Claude Code:** copy `skills/gruffet/` to `.claude/skills/gruffet/` (project) or `~/.claude/skills/` (global).
-- **Codex / Cursor / others:** [`AGENTS.md`](AGENTS.md) has the same instructions; most agents read it automatically.
-  Antigravity support is untested; if it reads `AGENTS.md` it should work, and the CLI is the same everywhere.
+> “Use Gruffet to research dentists in Leeds, check published contact information, and explain the evidence behind each result.”
 
-The rules the agent follows are in the skill: read cards, not pages; never guess a URL; cite a source for every
-phone/email it adds; never override a failed hard gate.
+## 📈 Competitor research
 
-## What works today
+```bash
+gruffet compete add https://rival-one.com https://rival-two.com
+gruffet compete run
+gruffet compete report
+gruffet note "Comparison" "@analysis.md"
+gruffet export
+```
 
-Verified on a live run (dentists within 2.5 km of central Leeds, UK, 40 requested):
+Collect visible positioning, pricing clues, site technology signals, and content clues. Pricing classifications and website “weak spots” are **heuristics**, not independently confirmed judgments.
 
-- 15 businesses found on OpenStreetMap → **2 perfect**, 1 agent-approved, 1 review, 11 needs-data.
-- Only 3 of 15 had a website in OSM; the rest need the `missing` → web-search → `add` loop.
-- The gates caught a real problem: a listed practice whose website now says a different name
-  (renamed/taken over). A naive scraper would have exported it as perfect under the stale name.
-  The agent accepted it with `--rename` after checking the evidence.
-- **Competitor analysis** was run live on three real lead-data vendors: two analysed (positioning, pricing, tech stack,
-  sitemap size, social links), one correctly reported as *blocked* (HTTP 403) and left alone. The run exposed and fixed
-  a price-to-plan misattribution and misleading sitemap "freshness" numbers.
-- **Google Maps plugin** was run live on a small search (details above). The first version returned only names and
-  addresses because Google's list cards don't show phone or website; reading each place page fixed that. The card parsing
-  is unit-tested on hand-written samples, not on Google's live page.
-- 41 unit tests cover extraction (JSON-LD, `mailto:`, Cloudflare-obfuscated emails, `[at]` forms, socials,
-  images, JS-app detection), the gates, duplicate merging, renames, tech/pricing/sitemap parsing, and the XLSX export.
-  The optional browser fallback (Crawl4AI) was checked against a JavaScript-only page and a static page.
+## 🎬 Watch Gruffet in action
 
-## Not built yet
+A narrated product walkthrough has been prepared. The video is awaiting upload to a publicly accessible release or video host; we will link it here once the destination is verified.
 
-Roadmap, in order. None of this exists yet:
+## 🧪 Status and limitations
 
-1. **Second independent source** (Overture Maps / Wikidata) so more leads can reach "perfect" without the agent.
-2. **Competitor analysis, deeper**: re-run and diff over time, review aggregation, ad-library signals.
-3. **Marketplace/product module** (Amazon-style: product, offers, reviews, bestsellers).
-4. **More opt-in local plugins**, off by default and never part of any hosted service: social *business pages* through
-   [Agent Reach](https://github.com/Panniantong/Agent-Reach), which needs *your* logged-in browser session. Personal
-   profiles stay out. (The Google Maps plugin already exists; see above.)
-5. **MCP server**, scheduled refreshes, CRM export, and a one-line installer for the skill.
+**Early v0.1:** Lead discovery, website checks, agent review, Excel export, and a basic competitor module exist. The repository contains **41 unit tests**. This does not establish production reliability.
 
-## Honest limits
+| Available today | Important caveat |
+|---|---|
+| OpenStreetMap discovery | Coverage and contact fields vary by region. |
+| Website and contact checks | **Branch addresses are not cross-checked.** |
+| Corroboration tiers | Agreement between sources does not guarantee current accuracy. |
+| Coding-agent review | Primarily tested with Claude Code. |
+| Competitor comparisons | Some assessments rely on heuristics. |
 
-- **Coverage = OpenStreetMap coverage.** Sparse areas give sparse results, and many entries have no phone or website.
-- **"Perfect" means precision over recall.** It proves two independent sources agree. It does not prove the business is good, open today, or that the contact is the right person. Absence of a closure signal is not proof of being open.
-- **Generic names** ("Dental Clinic") can fuzzy-match the wrong site. The shared-phone check is the strong signal.
-- **Addresses are not cross-checked yet.** A chain or multi-branch business can pass with a phone that belongs to a
-  different branch. Check the address column before outreach.
-- **Sites that refuse automated access** (HTTP 403/429, bot walls) are reported as "unknown" or "blocked", never rejected, and Gruffet does not try to get around them. Check those by hand. The optional browser mode is only for pages that need JavaScript to show their content.
-- **Public OSM servers are shared** and sometimes overloaded; discovery retries across mirrors and fails loudly rather than returning an empty list.
-- **Trust/chain sites** list organisation-wide inboxes; those aren't leads for outreach.
-- **Images belong to their owners.** Gruffet records source URL and page for each image; don't republish without permission.
-- **You are responsible for lawful use**: honour robots.txt (done automatically), site terms, and marketing/privacy law
-  (GDPR, PECR, CAN-SPAM, etc.) when contacting anyone. Gruffet only collects *business* contact details published by the
-  business itself and deliberately does not scrape personal social profiles or guess personal email addresses.
+**Google Maps notice:** An experimental opt-in browser plugin is included. Scraping Google Maps conflicts with Google's terms; don't use this route in a hosted or paid product. Use properly licensed data instead.
 
-## Credits
+**Responsible use:** Respect robots.txt, site terms, data licenses (including OpenStreetMap attribution/ODbL), applicable privacy and marketing laws, and third-party image rights. A public phone or email is not consent to unsolicited marketing.
 
-Design drew on seven open-source projects; see [`THIRD_PARTY.md`](THIRD_PARTY.md). MIT licensed.
+## 🗺️ What's next
 
-## Feedback and contributing
+- [ ] Better branch and address verification
+- [ ] Additional appropriately licensed discovery sources
+- [ ] More extensive reliability benchmarks
+- [ ] Competitor comparisons across time
+- [ ] MCP support, scheduling, and CRM integrations (not implemented)
 
-This is an early release and real-world feedback is the most useful thing you can give it. Please
-[open an issue](https://github.com/t4j44/Gruffet/issues) with what you searched for, what worked, and what didn't
-(redact any personal data). See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to run the tests and the project's ground rules.
+## 🤝 Contributing
+
+Open a [feedback issue](https://github.com/t4j44/Gruffet/issues/new/choose) when a search misses businesses, verification fails, or setup breaks. Include the operating system, exact command, and redacted example. Read [CONTRIBUTING.md](CONTRIBUTING.md) for development instructions.
+
+**[MIT License](LICENSE)** · **[Third-party credits and data notices](THIRD_PARTY.md)**
+
+<div align="center"><sub>For builders who prefer evidence over scraped guesses.</sub></div>
