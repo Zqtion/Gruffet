@@ -75,9 +75,9 @@ Optional browser rendering for JavaScript-heavy sites: `pip install -e ".[browse
 
 ## 🧠 Research Mode — first experimental integration
 
-Gruffet now has an **experimental** \`research\` command for both open-ended questions and specialist B2B prospect searches. It selects available discovery sources based on intent: **Agent Reach → Exa** for semantic discovery, optionally **OpenStreetMap** for local businesses, and Gruffet's existing **Crawl4AI-capable fetcher** for reading relevant site pages.
+Gruffet now has an **experimental** `research` command for both open-ended questions and specialist B2B prospect searches. It selects available discovery sources based on intent: **Agent Reach → Exa** for semantic discovery, optionally **OpenStreetMap** for local businesses, and Gruffet's existing **Crawl4AI-capable fetcher** for reading relevant site pages.
 
-\`\`\`bash
+```bash
 # See how Gruffet would route this request, without using any provider
 gruffet research "UK immigration firms with Skilled Worker practices" --plan-only
 
@@ -88,9 +88,9 @@ gruffet research "UK immigration law firms" --mode prospects \
 # No discovery integration required: investigate a known site
 gruffet research "What does this company offer?" --mode research \
   --source urls --url https://example.org
-\`\`\`
+```
 
-**Outputs:** \`gruffet-out/research.json\`, \`research.md\`, \`research.xlsx\`, and a local SQLite history/cache.
+**Outputs:** `gruffet-out/research.json`, `research.md`, `research.xlsx`, and a local SQLite history/cache.
 
 > [!WARNING]
 > The routing planner is **rules-based, not a built-in AI model**; code-agent reasoning remains external. Contact/role extraction has URL evidence but is **not independent verification**. An Exa/mcporter install is required for semantic search, and research may return zero records if providers are unavailable. See [Research Mode setup, permissions, limitations and benchmark plan](docs/RESEARCH_MODE.md).
