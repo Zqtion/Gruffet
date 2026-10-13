@@ -114,3 +114,82 @@ def test_reports_have_sources(tmp_path):
     assert "Jane Smith" in (tmp_path / "research.md").read_text(encoding="utf-8")
     assert (tmp_path / "research.xlsx").exists()
     assert json.loads((tmp_path / "research.json").read_text())["results"][0]["url"] == "https://firm.example"
+
+
+def test_lowercase_words_are_not_accepted_as_people():
+    # A role next to an ordinary lower-case phrase must not become a named person.
+    html = "<p>our process, director</p><p>Jane Smith — Head of Immigration</p>"
+    found = extract_people(html, "https://firm.example/team")
+    assert all(p["name"] != "our process" for p in found)
+    assert len(found) == 1
+
+
+def test_research_pipeline_with_mock_search_and_fetcher(monkeypatch, tmp_path):
+    """End-to-end research path without network or external AI providers."""
+    import asyncio
+    from types import SimpleNamespace
+    import gruffet.research as research_mod
+    from gruffet.store import Store
+
+    html = """<html><body>
+      <h1>Immigration Lawyers</h1>
+      <a href="/team">Meet our team</a>
+      <a href="/privacy">Privacy</a>
+      </body></html>"""
+    team = """<html><body>
+      <p>Jane Smith — Head of Immigration</p>
+      <p>Our team supports Skilled Worker visa applications.</p>
+      <a href="mailto:info@firm.example">Contact us</a>
+      </body></html>"""
+
+    class FakeFetcher:
+        def __init__(self, *a, **kw):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return None
+
+        async def get(self, url):
+            return SimpleNamespace(url=url, final_url=url, status=200, error=None,
+                                   rendered=False, ok=True,
+                                   html=team if "/team" in url else html)
+
+    monkeypatch.setattr(research_mod, "Fetcher", FakeFetcher)
+    monkeypatch.setattr(research_mod, "search_agent_reach",
+                        lambda query, limit: ["https://firm.example"])
+    plan = plan_query("UK immigration firms", roles="head of immigration",
+                      keywords="Skilled Worker")
+    db = Store(tmp_path)
+    try:
+        report = asyncio.run(research_mod.research(plan, db, [], limit=3, max_pages=3))
+        assert report["coverage"] == {"targets": 1, "researched": 1, "people": 1}
+        item = report["results"][0]
+        assert item["people"][0]["name"] == "Jane Smith"
+        assert item["people"][0]["source_url"].endswith("/team")
+        assert item["fit"]["matched"] == ["Skilled Worker"]
+        assert any(c["value"] == "info@firm.example" for c in item["contacts"])
+        saved = db.db.execute("SELECT result_json FROM research_history").fetchone()
+        assert json.loads(saved[0])["coverage"]["people"] == 1
+        assert (tmp_path / "gruffet.db").exists()
+    finally:
+        db.close()
+
+
+def test_provider_not_installed_reports_warning_without_inventing_leads(monkeypatch, tmp_path):
+    import asyncio
+    import gruffet.research as research_mod
+    from gruffet.store import Store
+
+    monkeypatch.setattr(research_mod.shutil, "which", lambda name: None)
+    plan = plan_query("Find UK law firms")
+    db = Store(tmp_path)
+    try:
+        report = asyncio.run(research_mod.research(plan, db, [], limit=5))
+        assert report["coverage"]["researched"] == 0
+        assert report["coverage"]["targets"] == 0
+        assert any("unavailable" in w.lower() for w in report["warnings"])
+    finally:
+        db.close()
