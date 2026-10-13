@@ -216,3 +216,27 @@ def test_mcporter_uses_real_cli_syntax(monkeypatch):
                                stderr="")
     monkeypatch.setattr(research_mod.subprocess, "run", fake_run)
     assert research_mod.search_agent_reach("UK solicitors", 3) == ["https://firm.example/team"]
+
+
+def test_excel_export_treats_untrusted_evidence_as_text(tmp_path):
+    from openpyxl import load_workbook
+    from gruffet.research import excel_safe
+
+    assert excel_safe('=1+1') == "'=1+1"
+    assert excel_safe('  =HYPERLINK("https://example.com")').startswith("'")
+    report = {
+        "plan": {"question": "What is this site?", "mode": "research"},
+        "results": [{
+            "url": "https://firm.example", "status": "researched",
+            "discovery": "provided", "fit": {"matched": []}, "people": [],
+            "contacts": [],
+            "pages": [{"url": "https://firm.example",
+                       "passages": ['=HYPERLINK("https://example.com")']}],
+        }], "warnings": [],
+    }
+    write_report(report, tmp_path)
+    book = load_workbook(tmp_path / "research.xlsx")
+    evidence = book["Evidence"]
+    cell = evidence["C2"]
+    assert cell.data_type != "f"
+    assert cell.value.startswith("'")
