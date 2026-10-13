@@ -193,3 +193,26 @@ def test_provider_not_installed_reports_warning_without_inventing_leads(monkeypa
         assert any("unavailable" in w.lower() for w in report["warnings"])
     finally:
         db.close()
+
+
+def test_introductory_heading_is_not_part_of_person_name():
+    people = extract_people("<p>Meet Jane Smith — Head of Immigration</p>",
+                            "https://firm.example/team")
+    assert len(people) == 1
+    assert people[0]["name"] == "Jane Smith"
+
+
+def test_mcporter_uses_real_cli_syntax(monkeypatch):
+    from types import SimpleNamespace
+    import gruffet.research as research_mod
+
+    monkeypatch.setattr(research_mod.shutil, "which", lambda name: "/usr/bin/mcporter")
+    def fake_run(argv, **kwargs):
+        assert argv[:3] == ["mcporter", "call", "exa.web_search_exa"]
+        assert "--output" not in argv  # mcporter call prints structured JSON by default.
+        assert any(v.startswith("query=") for v in argv)
+        return SimpleNamespace(returncode=0,
+                               stdout='{"content":[{"type":"text","text":"https://firm.example/team"}]}',
+                               stderr="")
+    monkeypatch.setattr(research_mod.subprocess, "run", fake_run)
+    assert research_mod.search_agent_reach("UK solicitors", 3) == ["https://firm.example/team"]
