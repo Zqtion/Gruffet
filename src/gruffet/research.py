@@ -33,8 +33,8 @@ PROSPECT_TERMS = re.compile(
     r"outreach|clients?|competitors?)\b", re.I)
 ROLE_TERMS = r"(?:managing partner|senior partner|partner|head of [a-z][a-z /-]{2,50}|director|founder|co-founder|chief [a-z ]{3,32} officer|CEO|CTO|CFO|solicitor|caseworker|manager|team lead)"
 NAME = r"[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?(?:\s+[A-Z][a-z]+(?:[-'][A-Z]?[a-z]+)?){1,2}"
-PERSON_FORWARD = re.compile(rf"\b(?P<name>{NAME})\s*[-–—,:|]\s*(?P<role>{ROLE_TERMS})\b", re.I)
-PERSON_BACKWARD = re.compile(rf"\b(?P<role>{ROLE_TERMS})\s*[-–—,:|]\s*(?P<name>{NAME})\b", re.I)
+PERSON_FORWARD = re.compile(rf"\b(?P<name>{NAME})\s*[-–—,:|]\s*(?P<role>(?i:{ROLE_TERMS}))\b")
+PERSON_BACKWARD = re.compile(rf"\b(?P<role>(?i:{ROLE_TERMS}))\s*[-–—,:|]\s*(?P<name>{NAME})\b")
 URL_RE = re.compile(r"https?://[^\s<>\]\[)\"']+", re.I)
 DETAIL_TERMS = ("team", "people", "staff", "leadership", "about", "contact", "partner",
                 "solicitor", "service", "practice", "pricing", "profile", "attorney", "lawyer")
@@ -167,12 +167,14 @@ def search_agent_reach(query: str, limit: int, timeout: int = 45) -> list[str]:
             "See docs/RESEARCH_MODE.md; or use --url to supply websites."
         )
     argv = ["mcporter", "call", "exa.web_search_exa", "query=" + query,
-            "numResults=" + str(max(1, min(limit, 25))), "--output", "json"]
+            "numResults=" + str(max(1, min(limit, 25)))]
     try:
         proc = subprocess.run(argv, capture_output=True, text=True,
                               timeout=timeout, check=False, encoding="utf-8", errors="replace")
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("Agent Reach/Exa search timed out") from exc
+    except OSError as exc:
+        raise RuntimeError("Agent Reach/Exa executable could not run") from exc
     if proc.returncode:
         raise RuntimeError("Agent Reach/Exa failed: " + (proc.stderr or proc.stdout)[:180])
     urls = parse_reach_urls(proc.stdout)
@@ -284,7 +286,7 @@ async def research(plan: Plan, store: Store, urls: list[str], limit: int = 10,
                 warnings.append("OSM unavailable: " + type(exc).__name__ + ": " + str(exc)[:140])
         else:
             warnings.append("OSM skipped: requires --near and a recognized place-based category.")
-    dedup: dict[str, str] = {}
+    dedup: dict[str, tuple[str, str]] = {}
     for url, source in collected:
         clean = safe_url(url)
         if not clean:
