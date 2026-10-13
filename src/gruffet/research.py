@@ -216,6 +216,11 @@ def extract_people(html: str, page_url: str, roles: list[str] | None = None) -> 
         for pattern in (PERSON_FORWARD, PERSON_BACKWARD):
             for match in pattern.finditer(evidence):
                 name, role = match.group("name"), match.group("role")
+                # Site headings often say "Meet Jane Smith"; it is not part of the name.
+                if name.startswith(("Meet ", "Introducing ", "Profile ")):
+                    name = name.split(" ", 1)[1]
+                if len(name.split()) < 2:
+                    continue
                 if requested and not any(r in role.lower() for r in requested):
                     continue
                 key = (name.casefold(), role.casefold())
