@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420" role="img" aria-labelledby="title desc">
+<title id="title">Gruffet ferret mascot</title><desc id="desc">A friendly caramel-colored ferret holding a glowing teal data scanner, finding golden data points.</desc>
+<rect width="420" height="420" rx="94" fill="#F8F3E8"/>
+<circle cx="210" cy="200" r="170" fill="#E9E4D4" opacity=".55"/>
+<path d="M110 308 Q40 324 59 242 Q67 225 80 252 Q89 286 126 274" fill="#BB713E" stroke="#473025" stroke-width="11" stroke-linecap="round"/>
+<path d="M125 278 Q103 250 131 228 Q168 210 198 223 L249 224 Q291 236 291 280 L282 327 Q260 350 224 345 L141 343 Q114 321 125 278Z" fill="#B87949" stroke="#473025" stroke-width="11" stroke-linejoin="round"/>
+<path d="M150 246 Q174 222 230 233 Q259 244 260 288 L251 328 Q206 345 155 322Z" fill="#F9E7CA"/>
+<path d="M146 245 L174 228 L182 328 L148 322Z" fill="#6C8066" stroke="#473025" stroke-width="6"/>
+<path d="M230 228 L260 238 L267 325 L231 330Z" fill="#6C8066" stroke="#473025" stroke-width="6"/>
+<path d="M145 280 L170 278 L168 295 L146 296ZM236 280 L258 280 L258 296 L237 295Z" fill="#97A78B" stroke="#473025" stroke-width="4"/>
+<path d="M113 172 Q83 121 115 92 Q145 67 177 100 L237 100 Q279 68 309 101 Q335 133 304 174" fill="#C28555" stroke="#473025" stroke-width="11" stroke-linejoin="round"/>
+<path d="M113 134 Q107 108 130 111 Q150 114 154 142Z M269 137 Q287 105 300 115 Q309 129 301 148Z" fill="#F0BBA6"/>
+<path d="M111 179 Q101 119 145 109 Q203 78 262 111 Q313 131 300 190 Q290 242 239 258 Q182 274 137 245 Q112 229 111 179Z" fill="#D99760" stroke="#473025" stroke-width="11"/>
+<path d="M132 193 Q147 173 174 185 Q201 192 208 223 Q215 186 247 183 Q281 182 293 199 Q271 251 216 255 Q166 258 132 229Z" fill="#FAE9CE"/>
+<ellipse cx="163" cy="177" rx="24" ry="30" fill="#FFF9EB" stroke="#473025" stroke-width="7"/><ellipse cx="250" cy="177" rx="24" ry="30" fill="#FFF9EB" stroke="#473025" stroke-width="7"/>
+<ellipse cx="168" cy="180" rx="12" ry="18" fill="#503528"/><ellipse cx="247" cy="180" rx="12" ry="18" fill="#503528"/><circle cx="172" cy="174" r="5" fill="white"/><circle cx="251" cy="174" r="5" fill="white"/>
+<path d="M200 207 Q207 198 216 205 Q221 216 208 223 Q197 215 200 207Z" fill="#6F3D36"/>
+<path d="M205 225 Q217 243 236 222" fill="none" stroke="#473025" stroke-width="6" stroke-linecap="round"/>
+<path d="M141 119 Q190 72 266 110" fill="none" stroke="#473025" stroke-width="9"/>
+<path d="M137 116 Q187 74 263 105 L276 127 Q222 114 132 135Z" fill="#789071" stroke="#473025" stroke-width="8" stroke-linejoin="round"/>
+<path d="M138 133 Q206 118 278 139" fill="none" stroke="#473025" stroke-width="8" stroke-linecap="round"/>
+<path d="M270 274 Q291 279 303 310" fill="none" stroke="#473025" stroke-width="15" stroke-linecap="round"/>
+<path d="M300 306 L325 322" fill="none" stroke="#6C706A" stroke-width="10" stroke-linecap="round"/>
+<path d="M320 319 L340 343" fill="none" stroke="#473025" stroke-width="8" stroke-linecap="round"/>
+<ellipse cx="340" cy="347" rx="29" ry="11" fill="#BCEFE3" stroke="#354B43" stroke-width="7"/>
+<path d="M310 290 L329 280 L346 309 L328 322Z" fill="#3E6258" stroke="#473025" stroke-width="6" stroke-linejoin="round"/>
+<path d="M318 289 L328 286 L338 305 L329 309Z" fill="#6DE1C6"/>
+<path d="M152 327 L152 347 L181 347 M232 331 L234 348 L260 348" fill="none" stroke="#473025" stroke-width="14" stroke-linecap="round"/>
+<g fill="#ECB64E"><circle cx="302" cy="353" r="5"/><circle cx="370" cy="361" r="6"/><circle cx="347" cy="374" r="5"/></g>
+<path d="M350 271 L356 282 L367 287 L356 292 L350 304 L344 292 L333 287 L344 282Z" fill="#21B69F"><animate attributeName="opacity" values=".5;1;.5" dur="2.2s" repeatCount="indefinite"/></path>
+</svg>
