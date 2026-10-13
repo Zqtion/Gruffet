@@ -349,6 +349,13 @@ async def research(plan: Plan, store: Store, urls: list[str], limit: int = 10,
     return report
 
 
+def excel_safe(value):
+    """Render untrusted website text as a string, never an Excel formula."""
+    if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@")):
+        return "\u0027" + value
+    return value
+
+
 def write_report(report: dict, workdir: str | Path) -> dict[str, str]:
     from openpyxl import Workbook
     root = Path(workdir)
@@ -379,19 +386,19 @@ def write_report(report: dict, workdir: str | Path) -> dict[str, str]:
     ws.title = "Research"
     ws.append(["URL", "Status", "Discovery", "Matched keywords", "People", "Contacts"])
     for item in report["results"]:
-        ws.append([item["url"], item["status"], item["discovery"],
-                   ", ".join(item.get("fit", {}).get("matched", [])),
+        ws.append([excel_safe(item["url"]), item["status"], item["discovery"],
+                   excel_safe(", ".join(item.get("fit", {}).get("matched", []))),
                    len(item.get("people", [])), len(item.get("contacts", []))])
     evidence = wb.create_sheet("Evidence")
     evidence.append(["URL", "Type", "Value or excerpt", "Source URL"])
     for item in report["results"]:
         for person in item.get("people", []):
-            evidence.append([item["url"], "person+role", person["evidence"], person["source_url"]])
+            evidence.append([excel_safe(item["url"]), "person+role", excel_safe(person["evidence"]), excel_safe(person["source_url"])])
         for contact in item.get("contacts", []):
-            evidence.append([item["url"], contact["type"], contact["value"], contact["source_url"]])
+            evidence.append([excel_safe(item["url"]), contact["type"], excel_safe(contact["value"]), excel_safe(contact["source_url"])])
         for page in item.get("pages", []):
             for passage in page["passages"]:
-                evidence.append([item["url"], "passage", passage, page["url"]])
+                evidence.append([excel_safe(item["url"]), "passage", excel_safe(passage), excel_safe(page["url"])])
     wb.save(xlsx_path)
     return {"json": str(json_path), "markdown": str(md_path), "xlsx": str(xlsx_path)}
 
