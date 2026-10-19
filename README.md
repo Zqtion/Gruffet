@@ -126,7 +126,9 @@ Collect visible positioning, pricing clues, site technology signals, and content
 
 ## 🎬 Watch Gruffet in action
 
-A narrated product walkthrough has been prepared. The video is awaiting upload to a publicly accessible release or video host; we will link it here once the destination is verified.
+**[▶ Watch the 56-second Gruffet introduction](https://github.com/Zqtion/Gruffet/releases/download/v0.1.0/Gruffet_GitHub_Under_10MB.mp4)** · [v0.1.0 early preview release](https://github.com/Zqtion/Gruffet/releases/tag/v0.1.0)
+
+*Promotional explainer showing an illustrative research workflow; not an independently validated live performance demo.*
 
 ## 🧪 Status and limitations
 
