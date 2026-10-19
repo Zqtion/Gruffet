@@ -11,7 +11,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-236b62?style=flat-square)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-377D73?style=flat-square)](pyproject.toml)
 [![Early release](https://img.shields.io/badge/release-v0.1%20early-F5B544?style=flat-square)](#-status-and-limitations)
-[![GitHub Issues](https://img.shields.io/github/issues/t4j44/Gruffet?style=flat-square)](https://github.com/t4j44/Gruffet/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/Zqtion/Gruffet?style=flat-square)](https://github.com/Zqtion/Gruffet/issues)
 
 **[⚡ Get started](#-quick-start) · [🔍 How it works](#-the-investigation-pipeline) · [📈 Competitor research](#-competitor-research) · [🤝 Contribute](#-contributing)**
 
@@ -49,7 +49,7 @@ Compare rivals       →  Fetch → Extract → Analyse → Report     →  Rese
 **Requires Python 3.10+.** Install using [uv](https://docs.astral.sh/uv/) or pip.
 
 ```bash
-uv tool install git+https://github.com/t4j44/Gruffet.git
+uv tool install git+https://github.com/Zqtion/Gruffet.git
 gruffet doctor
 gruffet run "dentist" --near "Leeds, United Kingdom" --limit 40
 ```
@@ -60,10 +60,10 @@ Your output: **`gruffet-out/leads.xlsx`**, including research, evidence, and rec
 <summary><strong>Other installation methods</strong></summary>
 
 ```bash
-pip install git+https://github.com/t4j44/Gruffet.git
+pip install git+https://github.com/Zqtion/Gruffet.git
 
 # Contributor setup
-git clone https://github.com/t4j44/Gruffet.git
+git clone https://github.com/Zqtion/Gruffet.git
 cd Gruffet
 uv venv
 uv pip install -e ".[dev]"
@@ -153,7 +153,7 @@ A narrated product walkthrough has been prepared. The video is awaiting upload t
 
 ## 🤝 Contributing
 
-Open a [feedback issue](https://github.com/t4j44/Gruffet/issues/new/choose) when a search misses businesses, verification fails, or setup breaks. Include the operating system, exact command, and redacted example. Read [CONTRIBUTING.md](CONTRIBUTING.md) for development instructions.
+Open a [feedback issue](https://github.com/Zqtion/Gruffet/issues/new/choose) when a search misses businesses, verification fails, or setup breaks. Include the operating system, exact command, and redacted example. Read [CONTRIBUTING.md](CONTRIBUTING.md) for development instructions.
 
 **[MIT License](LICENSE)** · **[Third-party credits and data notices](THIRD_PARTY.md)**
 
