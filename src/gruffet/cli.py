@@ -41,6 +41,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("doctor", parents=[c], help="probe every backend and report what works")
+    sub.add_parser("research", help="research any question or prospect profile using available providers")
 
     def add_discover(p):
         p.add_argument("keyword", help='what to find, e.g. "dentist", "restaurant", "travel agency"')
@@ -202,6 +203,10 @@ def main(argv: list[str] | None = None) -> int:
             stream.reconfigure(encoding="utf-8", errors="replace")
         except (AttributeError, ValueError):
             pass
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "research":
+        from .research import main as research_main
+        return research_main(argv[1:])
     a = build_parser().parse_args(argv)
     if a.cmd == "doctor":
         from .doctor import run
