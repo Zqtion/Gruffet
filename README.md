@@ -12,6 +12,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-377D73?style=flat-square)](pyproject.toml)
 [![Early release](https://img.shields.io/badge/release-v0.1%20early-F5B544?style=flat-square)](#-status-and-limitations)
 [![GitHub Issues](https://img.shields.io/github/issues/Zqtion/Gruffet?style=flat-square)](https://github.com/Zqtion/Gruffet/issues)
+[![Python CI](https://github.com/Zqtion/Gruffet/actions/workflows/ci.yml/badge.svg)](https://github.com/Zqtion/Gruffet/actions/workflows/ci.yml)
 
 **[⚡ Get started](#-quick-start) · [🔍 How it works](#-the-investigation-pipeline) · [📈 Competitor research](#-competitor-research) · [🤝 Contribute](#-contributing)**
 
