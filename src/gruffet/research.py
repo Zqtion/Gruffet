@@ -151,7 +151,7 @@ def parse_reach_urls(output: str) -> list[str]:
         pass
     seen: set[str] = set()
     results = []
-    for raw in URL_RE.findall(text) + ([text] if text.startswith("https://") else []):
+    for raw in URL_RE.findall(text):
         url = safe_url(raw)
         if url and url not in seen:
             seen.add(url)
