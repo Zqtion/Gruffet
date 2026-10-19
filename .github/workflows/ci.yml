@@ -2,7 +2,7 @@ name: Python CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/research-mode-v2]
   pull_request:
 
 permissions:
