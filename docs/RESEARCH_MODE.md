@@ -17,7 +17,7 @@ It accepts a question or target prospect description and routes to available sou
 
 ## Install
 
-    uv tool install git+https://github.com/t4j44/Gruffet.git
+    uv tool install git+https://github.com/Zqtion/Gruffet.git
     gruffet doctor
 
 For Agent Reach's Exa search, install and configure the upstream tools following:
