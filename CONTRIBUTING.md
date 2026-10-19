@@ -16,7 +16,7 @@ Please do not paste real people's personal data into issues.
 ## Running the tests
 
 ```bash
-git clone https://github.com/t4j44/Gruffet.git && cd Gruffet
+git clone https://github.com/Zqtion/Gruffet.git && cd Gruffet
 uv venv && uv pip install -e ".[dev]"      # or: python -m venv .venv && pip install -e ".[dev]"
 pytest
 ```
