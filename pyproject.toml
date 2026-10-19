@@ -36,5 +36,5 @@ packages = ["src/gruffet"]
 testpaths = ["tests"]
 
 [project.urls]
-Homepage = "https://github.com/t4j44/Gruffet"
-Issues = "https://github.com/t4j44/Gruffet/issues"
+Homepage = "https://github.com/Zqtion/Gruffet"
+Issues = "https://github.com/Zqtion/Gruffet/issues"
