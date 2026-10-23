@@ -6,7 +6,7 @@
 
 ### Find businesses. Verify contacts. Research competitors. Keep the evidence.
 
-**Free, open-source local business discovery and competitor intelligence for AI coding agents.**
+**Open-source Python CLI for local business lead discovery, public contact research, and competitor intelligence—built for AI coding agents.**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-236b62?style=flat-square)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-377D73?style=flat-square)](pyproject.toml)
@@ -14,9 +14,11 @@
 [![GitHub Issues](https://img.shields.io/github/issues/Zqtion/Gruffet?style=flat-square)](https://github.com/Zqtion/Gruffet/issues)
 [![Python CI](https://github.com/Zqtion/Gruffet/actions/workflows/ci.yml/badge.svg)](https://github.com/Zqtion/Gruffet/actions/workflows/ci.yml)
 
-**[⚡ Get started](#-quick-start) · [🔍 How it works](#-the-investigation-pipeline) · [📈 Competitor research](#-competitor-research) · [🤝 Contribute](#-contributing)**
+**[⚡ Install](#-quick-start) · [🔍 Workflow](#-the-investigation-pipeline) · [📈 Competitor research](#-competitor-research) · [❓ FAQ](#-frequently-asked-questions) · [🤝 Contribute](#-contributing)**
 
 </div>
+
+![Illustrated Gruffet research pipeline: discover public businesses, check evidence, review and export](assets/gruffet-flow.svg)
 
 ---
 
@@ -102,7 +104,7 @@ gruffet review --budget 1500
 gruffet export
 ```
 
-**Verification is not sales qualification.** A contact may be corroborated but still be a poor prospect.
+**Verification is not sales qualification.** A contact may be corroborated but still be a poor prospect. Gruffet does not claim that a found email or phone number is current, consented for outreach, or linked to a decision-maker.
 
 ## 🤖 Built for coding agents
 
@@ -129,6 +131,24 @@ Collect visible positioning, pricing clues, site technology signals, and content
 **[▶ Watch the 56-second Gruffet introduction](https://github.com/Zqtion/Gruffet/releases/download/v0.1.0/Gruffet_GitHub_Under_10MB.mp4)** · [v0.1.0 early preview release](https://github.com/Zqtion/Gruffet/releases/tag/v0.1.0)
 
 *Promotional explainer showing an illustrative research workflow; not an independently validated live performance demo.*
+
+## ❓ Frequently asked questions
+
+**What is Gruffet?** Gruffet is an open-source Python command-line tool (CLI) for discovering local businesses, researching publicly available business contact information, checking evidence, and exporting structured lead-research workbooks. It includes an early competitor website research module.
+
+**Is Gruffet free?** Yes. The code is MIT-licensed, and the default workflow does not require a paid data-provider key. Internet connectivity is required to query data sources and business websites; your own infrastructure or third-party usage may still have costs.
+
+**Is Gruffet an AI agent or a scraper?** The v0.1 CLI performs deterministic discovery, extraction, and rule-based checks. An external coding agent can review ambiguous evidence. It is **not** an autonomous sales agent and does **not** send outreach.
+
+**Does it use Google Maps?** The default discovery source is OpenStreetMap. There is an experimental opt-in Google Maps browser plugin; scraping Google Maps may violate Google's terms. This route is not recommended for hosted or commercial use.
+
+**Can I use Gruffet with Claude Code, Codex, or Cursor?** The CLI can be run from shell-capable coding agents. Claude Code has project skill instructions; the other integrations have not been fully field-tested. See [agent setup](#-built-for-coding-agents).
+
+**Does Gruffet have Agent Reach, autonomous deep research, or MCP support?** Not in the v0.1.0 release. The Agent Reach / Crawl4AI research work is experimental in [draft PR #2](https://github.com/Zqtion/Gruffet/pull/2). MCP, scheduling, and CRM integrations are future work.
+
+**How accurate are leads?** Accuracy depends on source coverage, website content, and the check results. A passing check is not proof that a company is active, a location is correct, or a contact is reachable. Independently validate important records before use.
+
+Read the [full FAQ](docs/FAQ.md) for source, privacy, and setup details.
 
 ## 🧪 Status and limitations
 
@@ -158,6 +178,6 @@ Collect visible positioning, pricing clues, site technology signals, and content
 
 Open a [feedback issue](https://github.com/Zqtion/Gruffet/issues/new/choose) when a search misses businesses, verification fails, or setup breaks. Include the operating system, exact command, and redacted example. Read [CONTRIBUTING.md](CONTRIBUTING.md) for development instructions.
 
-**[MIT License](LICENSE)** · **[Third-party credits and data notices](THIRD_PARTY.md)**
+**[MIT License](LICENSE)** · **[Third-party credits and data notices](THIRD_PARTY.md)** · **[Project FAQ](docs/FAQ.md)** · Made by [Zqtion](https://www.zqtion.com/)
 
 <div align="center"><sub>For builders who prefer evidence over scraped guesses.</sub></div>
